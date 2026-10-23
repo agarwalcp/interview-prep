@@ -1,0 +1,9 @@
+numpy
+pandas
+scipy
+scikit-learn
+requests
+pgmpy
+flask
+jupyter
+ipykernel

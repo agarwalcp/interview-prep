@@ -1,0 +1,347 @@
+{
+ "_note": "Hand-written starter rubrics (concepts are stem-matched; \"a|b\" = alternatives). Extend this file to make more questions fully gradable. Not validated against expert judgement.",
+ "entries": [
+  {
+   "match": "overfitting and underfitting|what is overfitting",
+   "core": [
+    "training data|training set",
+    "noise|memori[sz]e|memorises",
+    "unseen|new data|generali[sz]e|generali[sz]ation|test data"
+   ],
+   "important": [
+    "underfitting|too simple",
+    "regulari[sz]ation|dropout|early stopping|cross-validation|more data|simpler model|pruning"
+   ],
+   "optional": [
+    "bias|variance",
+    "complexity"
+   ],
+   "misconceptions": [
+    {
+     "pattern": "accurate\\s+on\\s+(all|every)\\s+data",
+     "message": "Overfitting is NOT being accurate on all data: the model does well on training data but poorly on unseen data."
+    },
+    {
+     "pattern": "overfitting\\s+(is|means|occurs)\\s+when\\s+(the\\s+)?model\\s+(is\\s+)?(too\\s+)?(simple|underperforms\\s+on\\s+training)",
+     "message": "That describes underfitting, not overfitting."
+    }
+   ],
+   "model_answer": "Overfitting: the model learns the training data too closely, including noise, so it performs well on training data but poorly on unseen data. Underfitting: the model is too simple to capture the pattern, so it performs poorly on both. Prevent overfitting with more data, regularization, dropout, early stopping, cross-validation, or a simpler model."
+  },
+  {
+   "match": "how does a decision tree algorithm work",
+   "core": [
+    "split|splits|splitting",
+    "feature|attribute",
+    "node|root|leaf|branch"
+   ],
+   "important": [
+    "gini|entropy|information gain|impurity",
+    "recursive|recursively|top-down",
+    "prediction|class|classif|regress"
+   ],
+   "optional": [
+    "pruning|overfit",
+    "greedy"
+   ],
+   "misconceptions": [
+    {
+     "pattern": "decision\\s+trees?\\s+(use|uses|are)\\s+(neural|gradient\\s+descent)",
+     "message": "Decision trees do not use neural networks or gradient descent; they split data by feature tests."
+    }
+   ],
+   "model_answer": "A decision tree repeatedly splits the data on the feature and threshold that best separates the target (using a criterion such as Gini impurity or information gain), building nodes down to leaves that give the prediction. Pruning or depth limits control overfitting."
+  },
+  {
+   "match": "gradient descent",
+   "core": [
+    "minimi[sz]e|minimum|reduce|decrease",
+    "loss|cost|error",
+    "gradient|derivative|slope",
+    "learning rate|step size"
+   ],
+   "important": [
+    "iterat|repeat|update|parameters|weights"
+   ],
+   "optional": [
+    "stochastic|mini-batch|batch|momentum|adam",
+    "local minim|converge|convergence"
+   ],
+   "misconceptions": [
+    {
+     "pattern": "maximi[sz]e\\s+the\\s+(loss|cost|error)",
+     "message": "Gradient descent minimizes the loss; it does not maximize it."
+    }
+   ],
+   "model_answer": "Gradient descent iteratively updates model parameters in the direction of the negative gradient of the loss, scaled by a learning rate, to minimize the loss. Variants: batch, stochastic (SGD), mini-batch, momentum, Adam."
+  },
+  {
+   "match": "cross-validation",
+   "core": [
+    "split|fold|folds|partition|subset",
+    "train|training",
+    "validat|test|evaluat"
+   ],
+   "important": [
+    "generali[sz]|unseen|overfit",
+    "average|mean|repeat|rotate|k-fold"
+   ],
+   "optional": [
+    "hyperparameter|model selection|variance"
+   ],
+   "misconceptions": [
+    {
+     "pattern": "cross-validation\\s+(is|means)\\s+(used\\s+)?to\\s+(increase|improve)\\s+the\\s+training\\s+accuracy",
+     "message": "Cross-validation estimates generalization performance; it does not increase training accuracy."
+    }
+   ],
+   "model_answer": "Cross-validation splits the data into folds, trains on some and validates on the held-out fold, rotating and averaging the results. It gives a more reliable estimate of generalization and helps detect overfitting and select models."
+  },
+  {
+   "match": "precision,? recall",
+   "core": [
+    "precision",
+    "recall",
+    "true positive|true positives|tp",
+    "false positive|false positives|false negative|false negatives"
+   ],
+   "important": [
+    "f1|harmonic",
+    "accuracy|imbalance|trade-?off"
+   ],
+   "optional": [],
+   "misconceptions": [
+    {
+     "pattern": "precision\\s+(is|means)\\s+(the\\s+)?(same\\s+as|equal\\s+to)\\s+recall",
+     "message": "Precision and recall are different: precision = TP/(TP+FP), recall = TP/(TP+FN)."
+    }
+   ],
+   "model_answer": "Precision = TP/(TP+FP): of predicted positives, how many are correct. Recall = TP/(TP+FN): of actual positives, how many were found. F1 is their harmonic mean. Accuracy can mislead on imbalanced data."
+  },
+  {
+   "match": "regulari[sz]ation",
+   "core": [
+    "penalty|penali[sz]e|penalty term",
+    "overfit",
+    "weights|coefficients|parameters"
+   ],
+   "important": [
+    "l1|lasso|sparse|sparsity|zero",
+    "l2|ridge|shrink|small"
+   ],
+   "optional": [
+    "complexity|generali[sz]"
+   ],
+   "misconceptions": [
+    {
+     "pattern": "regulari[sz]ation\\s+(increases|makes)\\s+(the\\s+)?(overfitting|variance)",
+     "message": "Regularization is used to reduce overfitting, not increase it."
+    }
+   ],
+   "model_answer": "Regularization adds a penalty on model weights to the loss to reduce overfitting. L1 (Lasso) penalizes absolute values and can drive weights to zero (sparsity); L2 (Ridge) penalizes squares and shrinks weights smoothly."
+  },
+  {
+   "match": "p-value|p-values",
+   "core": [
+    "probability",
+    "null hypothesis|null",
+    "data|observed|results|extreme"
+   ],
+   "important": [
+    "significan|threshold|0\\.05|alpha",
+    "reject"
+   ],
+   "optional": [
+    "misinterpret|effect size|limitation|multiple testing"
+   ],
+   "misconceptions": [
+    {
+     "pattern": "p-?value\\s+(is|means)\\s+(the\\s+)?probability\\s+(that\\s+)?(the\\s+)?(null|hypothesis)\\s+(is\\s+)?(true|correct)",
+     "message": "A p-value is not the probability that the null hypothesis is true."
+    }
+   ],
+   "model_answer": "A p-value is the probability of observing data at least as extreme as what was observed, assuming the null hypothesis is true. Small values (below a threshold such as 0.05) lead us to reject the null. It is not the probability that the null is true and says nothing about effect size."
+  },
+  {
+   "match": "confusion matrix",
+   "core": [
+    "true positive|true positives|tp",
+    "false positive|false positives|fp",
+    "false negative|false negatives|fn",
+    "true negative|true negatives|tn"
+   ],
+   "important": [
+    "predicted|actual",
+    "precision|recall|accuracy"
+   ],
+   "optional": [],
+   "misconceptions": [],
+   "model_answer": "A confusion matrix tabulates predicted vs actual classes: TP, FP, FN, TN. From it you compute accuracy, precision, recall and F1, and see which kinds of errors the model makes."
+  },
+  {
+   "match": "deal with missing data",
+   "core": [
+    "impute|imputation|fill|replace",
+    "drop|delete|remove",
+    "mean|median|mode"
+   ],
+   "important": [
+    "missing at random|mcar|mar|mnar|pattern|why",
+    "indicator|flag",
+    "model-based|knn|regression"
+   ],
+   "optional": [],
+   "misconceptions": [],
+   "model_answer": "First understand why data is missing, then drop rows/columns if few are affected or impute (mean/median/mode, KNN, model-based), optionally adding a missingness indicator."
+  },
+  {
+   "match": "what is a closure",
+   "core": [
+    "function",
+    "scope|lexical|outer",
+    "variable|variables",
+    "remember|access|retain|preserve"
+   ],
+   "important": [
+    "private|encapsulat|callback|counter|factory"
+   ],
+   "optional": [
+    "memory|loop"
+   ],
+   "misconceptions": [
+    {
+     "pattern": "closures?\\s+(is|are)\\s+(a\\s+way\\s+)?to\\s+(close|shut|end)",
+     "message": "A closure is a function bundled with its surrounding lexical scope, not a way to close something."
+    }
+   ],
+   "model_answer": "A closure is a function together with the lexical scope in which it was created, so it can access that scope's variables even after the outer function has returned. Used for data privacy, factories, callbacks and function-local state."
+  },
+  {
+   "match": "call stack and task queue",
+   "core": [
+    "call stack|stack",
+    "task queue|callback queue|queue",
+    "event loop"
+   ],
+   "important": [
+    "synchronous|asynchronous|async",
+    "empty|when the stack|settimeout|promise|microtask"
+   ],
+   "optional": [],
+   "misconceptions": [],
+   "model_answer": "The call stack runs synchronous function calls (LIFO). Async callbacks wait in the task queue; the event loop moves them onto the stack only when the stack is empty."
+  },
+  {
+   "match": "^explain how hashing works",
+   "core": [
+    "hash function|hash|hashing",
+    "key",
+    "bucket|index|array|table"
+   ],
+   "important": [
+    "collision|chaining|open addressing",
+    "o\\(1\\)|constant|average"
+   ],
+   "optional": [
+    "worst case|o\\(n\\)|load factor|resize"
+   ],
+   "misconceptions": [],
+   "model_answer": "Hashing maps a key through a hash function to an index in an array (bucket). Collisions are handled by chaining or open addressing. Lookup/insert are O(1) on average, O(n) worst case. Use cases: dictionaries, caches, sets."
+  },
+  {
+   "match": "^explain how stack works",
+   "core": [
+    "lifo|last in first out|last-in",
+    "push",
+    "pop"
+   ],
+   "important": [
+    "top|peek",
+    "o\\(1\\)|constant",
+    "undo|recursion|call stack|parenthes|backtrack|expression"
+   ],
+   "optional": [],
+   "misconceptions": [
+    {
+     "pattern": "stack\\s+(is|uses|follows)\\s+fifo|first\\s+in\\s+first\\s+out",
+     "message": "A stack is LIFO (last in, first out); FIFO describes a queue."
+    }
+   ],
+   "model_answer": "A stack is LIFO: push adds to the top, pop removes from the top, peek reads it; all O(1). Use cases: undo, recursion/call stack, expression parsing, backtracking."
+  },
+  {
+   "match": "^explain how queue works",
+   "core": [
+    "fifo|first in first out|first-in",
+    "enqueue|add|insert",
+    "dequeue|remove|front"
+   ],
+   "important": [
+    "o\\(1\\)|constant",
+    "scheduling|bfs|breadth|buffer|printer|task"
+   ],
+   "optional": [],
+   "misconceptions": [
+    {
+     "pattern": "queue\\s+(is|uses|follows)\\s+lifo|last\\s+in\\s+first\\s+out",
+     "message": "A queue is FIFO (first in, first out); LIFO describes a stack."
+    }
+   ],
+   "model_answer": "A queue is FIFO: enqueue at the rear, dequeue from the front, O(1) each. Use cases: scheduling, BFS, buffering."
+  },
+  {
+   "match": "^explain how linked list works",
+   "core": [
+    "node|nodes",
+    "pointer|pointers|reference|next",
+    "head"
+   ],
+   "important": [
+    "o\\(n\\)|linear|traverse|traversal",
+    "o\\(1\\)|insert|delet",
+    "array|contiguous|memory|dynamic"
+   ],
+   "optional": [
+    "doubly|singly|tail"
+   ],
+   "misconceptions": [
+    {
+     "pattern": "linked\\s+list\\s+(has|gives|supports)\\s+o\\(1\\)\\s+(random\\s+)?(access|indexing)",
+     "message": "A linked list does not support O(1) random access; reaching the i-th element takes O(n)."
+    }
+   ],
+   "model_answer": "A linked list stores nodes each holding a value and a pointer to the next node. Insert/delete at a known node or the head is O(1); search and indexing are O(n). Good for frequent insertions without resizing; poor for random access."
+  },
+  {
+   "match": "^acid$|\\bacid\\b",
+   "core": [
+    "atomic|atomicity",
+    "consisten",
+    "isolation",
+    "durab"
+   ],
+   "important": [
+    "transaction"
+   ],
+   "optional": [],
+   "misconceptions": [],
+   "model_answer": "ACID: Atomicity (all or nothing), Consistency (valid state to valid state), Isolation (concurrent transactions do not interfere), Durability (committed data survives failures)."
+  },
+  {
+   "match": "cap theorem",
+   "core": [
+    "consistency",
+    "availability",
+    "partition"
+   ],
+   "important": [
+    "two of three|choose two|trade-?off|only two"
+   ],
+   "optional": [
+    "network|distributed"
+   ],
+   "misconceptions": [],
+   "model_answer": "CAP theorem: a distributed data store cannot guarantee all of Consistency, Availability and Partition tolerance at once; under a network partition you must trade consistency against availability."
+  }
+ ]
+}

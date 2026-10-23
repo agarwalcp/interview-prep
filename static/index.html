@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interview Prep — AI mock interview platform</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="bg-glow"></div>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <button class="brand linkbtn" id="navHome" type="button" aria-label="Interview Prep dashboard"><span class="logo" aria-hidden="true">🎯</span> Interview Prep</button>
+  <nav id="stepper" class="stepper" aria-label="Setup progress" hidden>
+    <span data-step="role">1 Role</span><span data-step="config">2 Configure</span><span data-step="devices">3 Devices</span><span data-step="review">4 Review</span>
+  </nav>
+  <div class="tagline">For your own practice — not for screening candidates</div>
+</header>
+
+<main id="main">
+<!-- ============ 1. WELCOME DASHBOARD ============ -->
+<section id="view-welcome" class="view">
+  <div class="hero">
+    <h1>Practice interviews that <span class="grad">explain their scores</span></h1>
+    <p>Interview Prep is an AI mock-interview platform. Pick a role, answer real technical and HR questions by typing or speaking, and get a rubric-based breakdown of answer quality, delivery and the skills to revise.</p>
+    <div class="center"><button id="btnNew" class="btn primary big" type="button">Start New Interview</button></div>
+  </div>
+  <div id="statsRow" class="stats" hidden></div>
+  <div class="card">
+    <h2>Previous results</h2>
+    <div id="historyList" class="muted">Loading…</div>
+  </div>
+</section>
+
+<!-- ============ 2. ROLE ============ -->
+<section id="view-role" class="view" hidden>
+  <h1 class="vh">Select your interview role</h1>
+  <p class="muted">Choose one role. Questions in this interview come only from that role's question bank.</p>
+  <div id="roles" class="role-grid" role="group" aria-label="Interview roles"></div>
+  <div class="nav-row"><button class="btn" id="roleBack" type="button">← Back</button><button class="btn primary" id="roleNext" type="button" disabled>Continue →</button></div>
+</section>
+
+<!-- ============ 3. CONFIGURE ============ -->
+<section id="view-config" class="view" hidden>
+  <h1 class="vh">Configure the interview</h1>
+  <div class="card">
+    <h2>Interview type</h2>
+    <div id="typeSeg" class="seg" role="radiogroup" aria-label="Interview type"></div>
+    <h2 class="gap">Difficulty</h2>
+    <div id="diffSeg" class="seg" role="radiogroup" aria-label="Difficulty"></div>
+    <p class="hint">Difficulty is estimated from question wording and length (the source question banks have no difficulty labels). If a role has too few questions at a level, nearby levels are used and you are told.</p>
+  </div>
+  <div class="card">
+    <h2>Number of questions</h2>
+    <div class="sliders">
+      <label id="lblTech">Technical questions <b id="nTechVal">6</b><input id="nTech" type="range" min="1" max="12" value="6"></label>
+      <label id="lblHr">HR questions <b id="nHrVal">2</b><input id="nHr" type="range" min="1" max="5" value="2"></label>
+    </div>
+    <p class="muted">Estimated duration: <b id="estMin">–</b></p>
+    <label class="field">Candidate name or session label <span class="muted small">(optional)</span><input id="candName" type="text" maxlength="40" autocomplete="off"></label>
+    <p id="cfgErrors" class="errors" role="alert" hidden></p>
+  </div>
+  <div class="nav-row"><button class="btn" id="cfgBack" type="button">← Back</button><button class="btn primary" id="cfgNext" type="button">Continue →</button></div>
+</section>
+
+<!-- ============ 4. DEVICES ============ -->
+<section id="view-devices" class="view" hidden>
+  <h1 class="vh">Camera and microphone setup</h1>
+  <div class="card">
+    <h2>How will you answer?</h2>
+    <div class="seg" role="radiogroup" aria-label="Answer input mode">
+      <label class="segopt"><input type="radio" name="inputMode" value="typed" checked><span>⌨️ Type my answers<small>No devices required</small></span></label>
+      <label class="segopt"><input type="radio" name="inputMode" value="spoken"><span>🎙️ Speak my answers<small>Needs a working microphone and browser speech recognition</small></span></label>
+    </div>
+    <p id="sttSupport" class="hint"></p>
+    <label class="check"><input type="checkbox" id="voiceOn" checked> 🔊 Voice interviewer: read each question aloud</label>
+    <div class="row gap"><button class="btn small-btn" id="btnVoiceTest" type="button">Test voice</button><span id="ttsSupport" class="hint"></span></div>
+  </div>
+  <div class="grid2 even">
+    <div class="card">
+      <h2>Camera <span class="opt">optional</span></h2>
+      <div class="video-wrap"><video id="devVideo" autoplay muted playsinline></video><div class="video-ph" id="devVideoPh">Camera preview</div></div>
+      <div class="row gap"><button class="btn" id="btnCam" type="button">Start Camera</button><span id="camBadge" class="badge">Not tested</span></div>
+      <p id="camStatus" class="status" role="status">The camera is only used for a self-view preview. Nothing is recorded or uploaded.</p>
+    </div>
+    <div class="card">
+      <h2>Microphone</h2>
+      <div class="meter wide"><span>Level</span><div class="bar"><i id="micLevel"></i></div></div>
+      <div class="row gap"><button class="btn" id="btnMic" type="button">Start Microphone Test</button><button class="btn" id="btnRecTest" type="button" disabled>Record 4-second test</button><span id="micBadge" class="badge">Not tested</span></div>
+      <audio id="micPlayback" controls hidden></audio>
+      <p id="micStatus" class="status" role="status">Press the button, allow access, then speak. The level bar should move.</p>
+    </div>
+  </div>
+  <p id="devNote" class="hint"></p>
+  <div class="nav-row"><button class="btn" id="devBack" type="button">← Back</button><button class="btn primary" id="devNext" type="button">Continue to Interview →</button></div>
+</section>
+
+<!-- ============ 5. REVIEW ============ -->
+<section id="view-review" class="view" hidden>
+  <h1 class="vh">Final check</h1>
+  <div class="card">
+    <h2>Your interview</h2>
+    <dl id="reviewList" class="dl"></dl>
+  </div>
+  <div class="card">
+    <h2>Before you begin</h2>
+    <ul class="recs">
+      <li>Answer as you would in a real interview: explain the idea, give reasoning and an example.</li>
+      <li>Technical answers are scored on correctness, relevance, completeness and explanation. Repeating the question or listing keywords scores low.</li>
+      <li>HR answers should describe one real situation, what you did, and the result.</li>
+      <li>Scores and expected concepts are shown only on the results screen.</li>
+      <li id="revSpoken" hidden>Spoken answers also get a delivery estimate (filler words, pace, repetition). It is not a measure of your confidence or emotions.</li>
+    </ul>
+  </div>
+  <p id="beginError" class="errors" role="alert" hidden></p>
+  <div class="nav-row"><button class="btn" id="revBack" type="button">← Back</button><button class="btn primary big" id="btnBegin" type="button">Begin Interview</button></div>
+</section>
+
+<!-- ============ 6. INTERVIEW ============ -->
+<section id="view-interview" class="view" hidden>
+  <div class="topbar">
+    <span class="chip" id="roleChip"></span>
+    <div class="progress" role="progressbar" aria-label="Interview progress" id="progress" aria-valuemin="0" aria-valuemax="100"><i id="progressBar"></i></div>
+    <span class="muted" id="qCount"></span>
+    <span class="timer" id="timer" aria-label="Elapsed time">00:00</span>
+    <button class="btn small-btn" id="btnEnd" type="button">End interview</button>
+  </div>
+  <div class="grid2">
+    <div class="col">
+      <div class="card qcard">
+        <div class="qtag" id="qTag"></div>
+        <h2 id="qText" class="qtext"></h2>
+        <div class="row gap"><button class="btn small-btn" id="btnReplay" type="button">🔊 Replay question</button><label class="check"><input type="checkbox" id="voiceLive"> Read questions aloud</label><span id="speakStatus" class="muted small" role="status"></span></div>
+      </div>
+      <div class="card">
+        <div id="typedBox">
+          <label for="answer" class="vh">Your answer</label>
+          <textarea id="answer" rows="8" placeholder="Type your answer here…"></textarea>
+        </div>
+        <div id="spokenBox" hidden>
+          <div class="row"><button class="btn" id="btnRecStart" type="button">🎙️ Start Recording</button><button class="btn" id="btnRecStop" type="button" disabled>⏹ Stop Recording</button><button class="btn" id="btnClearTr" type="button">Clear</button><span id="recStatus" class="pill" role="status">Not recording</span></div>
+          <div id="transcript" class="transcript" aria-live="polite" aria-label="Live transcript"><span class="muted">Your transcript will appear here.</span></div>
+        </div>
+        <div class="row between gap"><span class="muted small" id="submitHint">Ctrl + Enter to submit</span><button id="btnSubmit" class="btn primary" type="button" disabled>Submit Answer</button></div>
+        <div id="evalBusy" class="busy" hidden role="status"><i class="spin"></i> Evaluating your answer…</div>
+      </div>
+    </div>
+    <div class="col side">
+      <div class="card" id="camCard" hidden>
+        <div class="row between"><h3>Camera</h3><button class="btn small-btn" id="btnCamHide" type="button">Hide</button></div>
+        <div class="video-wrap" id="liveWrap"><video id="liveVideo" autoplay muted playsinline></video><div class="video-ph">Camera off</div></div>
+      </div>
+      <div class="card"><h3>Answers saved</h3><div id="savedList" class="muted small">None yet.</div></div>
+    </div>
+  </div>
+  <div id="endModal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="endTitle">
+    <div class="modal-box"><h3 id="endTitle">End the interview early?</h3><p class="muted">Answers you have already submitted will be scored. Unanswered questions are not counted.</p>
+      <div class="row end"><button class="btn" id="endCancel" type="button">Keep going</button><button class="btn primary" id="endConfirm" type="button">End and see results</button></div></div>
+  </div>
+</section>
+
+<!-- ============ 7. RESULTS ============ -->
+<section id="view-results" class="view" hidden>
+  <div id="resultsRoot"></div>
+  <div class="center row gap-c"><button id="btnRetake" class="btn primary big" type="button">Retake Interview</button><button id="btnHome" class="btn big" type="button">Return to Dashboard</button></div>
+</section>
+</main>
+
+<div id="toast" class="toast" role="alert" hidden></div>
+<script src="/static/app.js"></script>
+</body>
+</html>
