@@ -4,7 +4,7 @@ InterviewIQ server.   Run:  python server.py     (opens http://localhost:5055)
 The browser handles camera, microphone, speech-to-text and read-aloud (no OpenCV / PortAudio needed).
 This server holds the explainable core: grading -> Bayesian skill network -> Markov chain -> RBM confidence.
 """
-import threading, uuid, webbrowser
+import os, threading, uuid, webbrowser
 import pandas as pd
 from flask import Flask, jsonify, request, send_from_directory
 from interview_engine import (InterviewSession, INTERVIEW_TYPES, DIFFICULTIES, estimated_minutes,
@@ -18,7 +18,9 @@ from paths import QUESTION_BANK
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 BANK = pd.read_csv(QUESTION_BANK)
 CONF = ConfidenceModel()
-SESSIONS = {}          # single-user local app: session_id -> InterviewSession
+SESSIONS = {}          # session_id -> InterviewSession (in memory)
+MAX_SESSIONS = 200     # online use: drop the oldest sessions so memory cannot grow without limit
+HISTORY_ENABLED = os.environ.get('DISABLE_HISTORY') != '1'   # set DISABLE_HISTORY=1 on a public server: history is shared, not per-user
 
 
 def graph_payload(sess):
@@ -98,6 +100,8 @@ def start():
         return jsonify(error='No questions are available for that configuration.'), 400
     sid = uuid.uuid4().hex
     SESSIONS[sid] = sess
+    while len(SESSIONS) > MAX_SESSIONS:
+        SESSIONS.pop(next(iter(SESSIONS)))
     qs = [{'index': i, 'question': q['question'], 'is_hr': bool(q['is_hr']), 'skill': q.get('skill'),
            'category': q['category'], 'difficulty': q.get('difficulty')} for i, q in enumerate(sess.questions)]
     return jsonify(session_id=sid, config=cfg, questions=qs, graph=graph_payload(sess), difficulty_note=sess.difficulty_note,
@@ -142,7 +146,7 @@ def report():
     r['scoring'] = {'version': C.SCORING_VERSION, 'tech_weights': C.TECH_WEIGHTS, 'hr_weights': C.HR_WEIGHTS,
                     'pass_threshold': C.PASS_THRESHOLD, 'validated': False}
     sid = request.args.get('session_id')
-    history.save_result(r, {'role': sess.role, 'interview_type': sess.interview_type, 'difficulty': sess.difficulty,
+    if HISTORY_ENABLED: history.save_result(r, {'role': sess.role, 'interview_type': sess.interview_type, 'difficulty': sess.difficulty,
                             'candidate_name': sess.candidate_name, 'answered': r['answered'], 'total': r['total'],
                             'overall_score': r['overall_score']}, session_id=sid)
     return jsonify(r)
@@ -150,12 +154,12 @@ def report():
 
 @app.get('/api/history')
 def history_list():
-    return jsonify(items=history.list_history())
+    return jsonify(items=history.list_history() if HISTORY_ENABLED else [])
 
 
 @app.get('/api/history/<entry_id>')
 def history_get(entry_id):
-    e = history.get_result(entry_id)
+    e = history.get_result(entry_id) if HISTORY_ENABLED else None
     if not e:
         return jsonify(error='Result not found.'), 404
     return jsonify(e)
@@ -173,7 +177,11 @@ def independence():
 
 
 if __name__ == '__main__':
-    url = 'http://localhost:5055'
-    print(f'\nInterviewIQ running at {url}   (Ctrl+C to stop)\nUse Microsoft Edge or Google Chrome for camera/mic/voice features.\n')
-    threading.Timer(1.2, lambda: webbrowser.open(url)).start()
-    app.run(host='127.0.0.1', port=5055, debug=False)
+    port = int(os.environ.get('PORT', 5055))
+    if 'PORT' in os.environ:          # running on a hosting service
+        app.run(host='0.0.0.0', port=port, debug=False)
+    else:                             # running on your own computer
+        url = f'http://localhost:{port}'
+        print(f'\nInterview Prep running at {url}   (Ctrl+C to stop)\nUse Microsoft Edge or Google Chrome for camera/mic/voice features.\n')
+        threading.Timer(1.2, lambda: webbrowser.open(url)).start()
+        app.run(host='127.0.0.1', port=port, debug=False)
